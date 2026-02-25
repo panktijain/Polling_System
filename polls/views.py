@@ -10,6 +10,13 @@ from .forms import PollCreationForm, RegistrationForm
 from .models import Option, Poll, Vote
 
 
+def home(request):
+    """
+    Render the unique, attractive homepage for the polling system.
+    """
+    return render(request, 'polls/home.html')
+
+
 def poll_list(request):
     # List polls, optionally filter by category
     category = request.GET.get('category')
@@ -146,8 +153,11 @@ def create_poll(request):
 
 @login_required
 def my_polls(request):
+    # Retrieve all polls created by the current user
     polls = Poll.objects.filter(created_by=request.user).prefetch_related('options').order_by('-created_at')
-    return render(request, 'polls/my_polls.html', {'polls': polls})
+    # Calculate total votes across all user's polls
+    total_votes = sum(poll.total_votes() for poll in polls)
+    return render(request, 'polls/my_polls.html', {'polls': polls, 'total_votes': total_votes})
 
 
 @login_required

@@ -1,0 +1,40 @@
+{% extends "polls/base.html" %}
+{% load static %}
+{% block title %}Welcome to Polling System{% endblock %}
+{% block content %}
+<div class="homepage-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">Discover, Vote & Create Polls</h1>
+    <p class="hero-subtitle">Shape opinions, share your voice, and explore trending topics in Technology, Education, Entertainment, College Life, and Sports.</p>
+    <div class="hero-actions">
+      <a href="{% url 'poll_list' %}" class="hero-btn">Browse Polls</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'create_poll' %}" class="hero-btn hero-btn-secondary">Create Poll</a>
+      {% else %}
+        <a href="{% url 'register' %}" class="hero-btn hero-btn-secondary">Register</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="homepage-sections">
+  <h2 class="section-title">Popular Categories</h2>
+  <div class="category-showcase">
+    <div class="category-card category-technology">Technology</div>
+    <div class="category-card category-education">Education</div>
+    <div class="category-card category-entertainment">Entertainment</div>
+    <div class="category-card category-college_life">College Life</div>
+    <div class="category-card category-sports">Sports</div>
+  </div>
+</div>
+<div class="homepage-info">
+  <h2 class="section-title">Why Use Our Polling System?</h2>
+  <ul class="info-list">
+    <li>✔ Easy poll creation and participation</li>
+    <li>✔ Real-time results and analytics</li>
+    <li>✔ Secure and user-friendly interface</li>
+    <li>✔ Explore polls by category</li>
+    <li>✔ Join a vibrant community</li>
+  </ul>
+</div>
+{% endblock %}

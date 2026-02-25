@@ -1,46 +1,102 @@
 {% extends "polls/base.html" %}
-{% block title %}My Polls{% endblock %}
+{% block title %}My Polls Dashboard{% endblock %}
 {% block content %}
-<div class="page-header">
-  <h1>My Polls</h1>
-  <a href="{% url 'create_poll' %}" class="btn">+ Create Poll</a>
+
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+  <div class="dashboard-title">
+    <h1 class="dashboard-heading">📊 My Polls Dashboard</h1>
+    <p class="dashboard-subtitle">Create, manage, and analyze your community polls</p>
+  </div>
+  <a href="{% url 'create_poll' %}" class="btn btn-create-poll">+ Create New Poll</a>
 </div>
 
+<!-- Stats Section -->
 {% if polls %}
-  {% for poll in polls %}
-  <div class="card">
-    <div class="poll-row">
-      <div>
-        <h2 style="margin-bottom:4px;">
-          <a href="{% url 'poll_detail' poll.id %}">{{ poll.question }}</a>
-        </h2>
-        <p class="card-meta">
-          <span class="badge {% if poll.is_active %}badge-active{% else %}badge-inactive{% endif %}">
-            {% if poll.is_active %}Active{% else %}Inactive{% endif %}
-          </span>
-          &nbsp;
-          <span class="stat"><strong>{{ poll.total_votes }}</strong> vote{{ poll.total_votes|pluralize }}</span>
-          &nbsp;&middot;&nbsp;
-          <span class="stat">Created {{ poll.created_at|date:"M j, Y" }}</span>
-        </p>
-      </div>
-      <div class="poll-row-actions">
-        <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary btn-sm">Results</a>
-        <form method="post" action="{% url 'deactivate_poll' poll.id %}" style="display:inline">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-secondary btn-sm">
-            {% if poll.is_active %}Deactivate{% else %}Reactivate{% endif %}
-          </button>
-        </form>
-        <a href="{% url 'delete_poll' poll.id %}" class="btn btn-danger btn-sm">Delete</a>
-      </div>
+<div class="dashboard-stats">
+  <div class="stat-card">
+    <div class="stat-icon-bg" style="background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);">
+      <div class="stat-icon">📊</div>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Total Polls Created</p>
+      <p class="stat-value">{{ polls|length }}</p>
     </div>
   </div>
-  {% endfor %}
-{% else %}
-  <div class="card empty-state">
-    <p>You haven't created any polls yet.</p>
-    <a href="{% url 'create_poll' %}" class="btn">Create your first poll</a>
+  <div class="stat-card">
+    <div class="stat-icon-bg" style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);">
+      <div class="stat-icon">✨</div>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Active Polls</p>
+      <p class="stat-value">{% regroup polls by is_active as grouped %}{% for active, items in grouped %}{% if active %}{{ items|length }}{% else %}0{% endif %}{% endfor %}</p>
+    </div>
   </div>
+  <div class="stat-card">
+    <div class="stat-icon-bg" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);">
+      <div class="stat-icon">🗳️</div>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Total Engagement</p>
+      <p class="stat-value">{{ total_votes }}</p>
+    </div>
+  </div>
+</div>
 {% endif %}
+
+<!-- Polls Grid -->
+{% if polls %}
+<div class="polls-container">
+  <h2 class="section-title">Your Polls</h2>
+  <div class="polls-grid">
+    {% for poll in polls %}
+    <div class="poll-card enhanced-poll-card">
+      <div class="poll-card-header">
+        <div class="poll-status-group">
+          <span class="poll-status {% if poll.is_active %}status-active{% else %}status-inactive{% endif %}">
+            {% if poll.is_active %}<span class="status-badge active-badge">🟢 Active</span>{% else %}<span class="status-badge inactive-badge">⭕ Inactive</span>{% endif %}
+          </span>
+          <span class="poll-category category-{{ poll.category }}">{{ poll.get_category_display }}</span>
+        </div>
+      </div>
+      <div class="poll-card-body">
+        <h3 class="poll-question"><a href="{% url 'poll_detail' poll.id %}">{{ poll.question }}</a></h3>
+        {% if poll.description %}
+          <p class="poll-description">{{ poll.description|truncatewords:20 }}</p>
+        {% endif %}
+      </div>
+      <div class="poll-card-stats">
+        <div class="poll-stat">
+          <span class="poll-stat-icon">🗳️</span>
+          <span class="poll-stat-value"><strong>{{ poll.total_votes }}</strong> vote{{ poll.total_votes|pluralize }}</span>
+        </div>
+        <div class="poll-stat">
+          <span class="poll-stat-icon">📅</span>
+          <span class="poll-stat-value">Created {{ poll.created_at|date:"M j, Y" }}</span>
+        </div>
+      </div>
+      <div class="poll-card-actions">
+        <a href="{% url 'poll_results' poll.id %}" class="action-btn action-results" title="View poll results">📈 Results</a>
+        <a href="{% url 'poll_detail' poll.id %}" class="action-btn action-view" title="View full poll page">👁️ View</a>
+        <form method="post" action="{% url 'deactivate_poll' poll.id %}" style="display:inline" title="{% if poll.is_active %}Pause this poll{% else %}Resume this poll{% endif %}">
+          {% csrf_token %}
+          <button type="submit" class="action-btn action-toggle">
+            {% if poll.is_active %}⏸️ Pause{% else %}▶️ Resume{% endif %}
+          </button>
+        </form>
+        <a href="{% url 'delete_poll' poll.id %}" class="action-btn action-delete" title="Delete this poll">🗑️ Delete</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="empty-dashboard">
+  <div class="empty-icon">📭</div>
+  <h2>No Polls Yet</h2>
+  <p>Start creating polls to build your collection and engage your community!</p>
+  <a href="{% url 'create_poll' %}" class="btn btn-primary btn-large">Create Your First Poll</a>
+</div>
+{% endif %}
+
 {% endblock %}

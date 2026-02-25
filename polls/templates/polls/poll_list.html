@@ -1,46 +1,58 @@
 {% extends "polls/base.html" %}
 {% block title %}Active Polls{% endblock %}
 {% block content %}
-<div class="page-header">
-    <h1>Active Polls</h1>
+<div class="polls-header">
+    <div class="polls-header-content">
+        <h1 class="polls-title">🗳️ Active Polls</h1>
+        <p class="polls-subtitle">Explore and participate in community polls</p>
+    </div>
     {% if user.is_authenticated %}
-    <a href="{% url 'create_poll' %}" class="btn">+ Create Poll</a>
+    <a href="{% url 'create_poll' %}" class="btn btn-create">+ Create Poll</a>
+    {% else %}
+    <a href="{% url 'register' %}" class="btn btn-create">Register to Create</a>
     {% endif %}
 </div>
 
-<div class="category-filter">
-    <span>Filter by category:</span>
-    {% for code, label in categories %}
-        <a href="?category={{ code }}" class="category-badge {% if selected_category == code %}active{% endif %}">{{ label }}</a>
-    {% endfor %}
+<div class="category-section">
+    <p class="category-label">Filter by Category</p>
+    <div class="category-tabs">
+        <a href="{% url 'poll_list' %}" class="category-tab-btn {% if not selected_category %}active-tab{% endif %}">All Polls</a>
+        {% for code, label in categories %}
+            <a href="?category={{ code }}" class="category-tab-btn {% if selected_category == code %}active-tab{% endif %}">{{ label }}</a>
+        {% endfor %}
+    </div>
 </div>
 
 {% if polls %}
-{% for poll in polls %}
-<div class="card">
-    <div class="card-header">
-        <h2><a href="{% url 'poll_detail' poll.id %}">{{ poll.question }}</a></h2>
-        <span class="category-badge category-{{ poll.category }}">{{ poll.get_category_display }}</span>
+<div class="polls-list">
+    {% for poll in polls %}
+    <div class="card poll-card-item">
+        <div class="poll-card-header-row">
+            <div class="poll-title-section">
+                <h2 class="poll-title"><a href="{% url 'poll_detail' poll.id %}">{{ poll.question }}</a></h2>
+                <span class="category-badge">{{ poll.get_category_display }}</span>
+            </div>
+        </div>
+        <p class="poll-meta">
+            <span class="vote-count">🗳️ {{ poll.total_votes }} vote{{ poll.total_votes|pluralize }}</span>
+            {% if poll.created_by %}<span class="poll-author">👤 by {{ poll.created_by.username }}</span>{% endif %}
+        </p>
+        <div class="btn-group">
+            <a href="{% url 'poll_detail' poll.id %}" class="btn">Vote Now</a>
+            <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary">View Results</a>
+        </div>
     </div>
-    <p class="card-meta">
-        <span class="stat"><strong>{{ poll.total_votes }}</strong> vote{{ poll.total_votes|pluralize }}</span>
-        {% if poll.created_by %}
-        &nbsp;&middot;&nbsp; by {{ poll.created_by.username }}
-        {% endif %}
-    </p>
-    <div class="btn-group">
-        <a href="{% url 'poll_detail' poll.id %}" class="btn">Vote</a>
-        <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary btn-sm">Results</a>
-    </div>
+    {% endfor %}
 </div>
-{% endfor %}
 {% else %}
 <div class="card empty-state">
-    <p>No active polls yet.</p>
+    <div class="empty-icon">📭</div>
+    <h2>No Active Polls</h2>
+    <p>There are no active polls in this category yet. Be the first to create one!</p>
     {% if user.is_authenticated %}
-    <a href="{% url 'create_poll' %}" class="btn">Create the first poll</a>
+    <a href="{% url 'create_poll' %}" class="btn">Create the First Poll</a>
     {% else %}
-    <a href="{% url 'register' %}" class="btn">Register to create polls</a>
+    <a href="{% url 'register' %}" class="btn">Register to Create Polls</a>
     {% endif %}
 </div>
 {% endif %}
