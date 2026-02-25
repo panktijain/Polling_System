@@ -1,0 +1,24 @@
+{% extends "polls/base.html" %}
+{% block title %}Delete Poll{% endblock %}
+{% block content %}
+<a href="{% url 'my_polls' %}" class="back-link">← Back to my polls</a>
+<div class="page-header">
+  <h1>Delete Poll</h1>
+</div>
+
+<div class="card danger-zone">
+  <h2>Are you sure?</h2>
+  <p style="margin:12px 0;">You are about to permanently delete:</p>
+  <p><strong>{{ poll.question }}</strong></p>
+  <div class="alert alert-warning" style="margin-top:12px;">
+    This will also delete all {{ poll.total_votes }} vote{{ poll.total_votes|pluralize }} and all options. This action cannot be undone.
+  </div>
+  <div class="btn-group">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, delete permanently</button>
+    </form>
+    <a href="{% url 'my_polls' %}" class="btn btn-secondary">Cancel</a>
+  </div>
+</div>
+{% endblock %}

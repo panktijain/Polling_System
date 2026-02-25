@@ -1,0 +1,49 @@
+{% extends "polls/base.html" %}
+{% load static %}
+{% block title %}Create Poll{% endblock %}
+{% block content %}
+<a href="{% url 'poll_list' %}" class="back-link">← Back to polls</a>
+<div class="page-header">
+  <h1>Create a Poll</h1>
+</div>
+
+{% if form.non_field_errors %}
+  <div class="alert alert-error">{{ form.non_field_errors }}</div>
+{% endif %}
+
+<div class="card">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="form-label">Question</label>
+      {% if form.question.errors %}
+        <p class="form-error">{{ form.question.errors|join:", " }}</p>
+      {% endif %}
+      <input class="form-input" type="text" name="question"
+             value="{{ form.question.value|default:'' }}"
+             placeholder="Enter your poll question..." autofocus required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Options <span class="form-help" style="display:inline;">(minimum 2)</span></label>
+      <div id="options-container">
+        {% for text in option_texts %}
+        <div class="option-row">
+          <input type="text" name="option_text" class="form-input"
+                 placeholder="Option {{ forloop.counter }}"
+                 value="{{ text }}" required>
+          <button type="button" class="btn-remove" title="Remove">&#x2212;</button>
+        </div>
+        {% endfor %}
+      </div>
+      <button type="button" id="add-option-btn" class="add-option-btn">+ Add Option</button>
+    </div>
+
+    <div class="btn-group">
+      <button type="submit" class="btn">Create Poll</button>
+      <a href="{% url 'poll_list' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+<script src="{% static 'polls/js/poll_form.js' %}"></script>
+{% endblock %}

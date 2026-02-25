@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Poll System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'polls/css/main.css' %}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="{% url 'poll_list' %}" class="navbar-brand">Poll System</a>
+            <ul class="navbar-nav">
+                <li><a href="{% url 'poll_list' %}">Browse</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'create_poll' %}">Create Poll</a></li>
+                <li><a href="{% url 'my_polls' %}">My Polls</a></li>
+                <li><a href="{% url 'vote_history' %}">My Votes</a></li>
+                <li class="navbar-user">{{ user.username }}</li>
+                <li>
+                    <form method="post" action="{% url 'logout' %}" style="display:inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-link">Logout</button>
+                    </form>
+                </li>
+                {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}" class="btn-nav">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+{% extends "polls/base.html" %}
+{% block title %}My Votes{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>My Votes</h1>
+</div>
+
+{% if user_votes %}
+<div class="card" style="padding:0;overflow:hidden;">
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>Poll</th>
+        <th>Your Choice</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for vote in user_votes %}
+    <tr>
+      <td class="history-item-question">
+        {% if vote.poll.is_active %}
+          <a href="{% url 'poll_detail' vote.poll.id %}">{{ vote.poll.question }}</a>
+        {% else %}
+          {{ vote.poll.question }}
+          <span class="badge badge-inactive" style="margin-left:6px;">Closed</span>
+        {% endif %}
+      </td>
+      <td class="history-item-option">{{ vote.option.text }}</td>
+      <td class="history-item-date">{{ vote.voted_at|date:"M j, Y" }}</td>
+      <td><a href="{% url 'poll_results' vote.poll.id %}" class="btn btn-secondary btn-sm">Results</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card empty-state">
+  <p>You haven't voted on any polls yet.</p>
+  <a href="{% url 'poll_list' %}" class="btn">Browse polls</a>
+</div>
+{% endif %}
+{% endblock %}

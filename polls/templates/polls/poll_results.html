@@ -1,0 +1,56 @@
+{% extends "polls/base.html" %}
+{% block title %}Results: {{ poll.question }}{% endblock %}
+{% block content %}
+<a href="{% url 'poll_list' %}" class="back-link">← Back to polls</a>
+
+<div class="page-header">
+    <h1>Results</h1>
+</div>
+<p class="stat" style="margin-bottom:16px;">{{ poll.question }}</p>
+<p class="stat">Total votes: <strong>{{ total_votes }}</strong></p>
+
+{% if options_data %}
+<div class="card" style="padding:0;overflow:hidden;">
+    <table>
+        <thead>
+            <tr>
+                <th>Option</th>
+                <th style="width:70px;">Votes</th>
+                <th style="width:70px;">%</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in options_data %}
+            {% if user_vote and user_vote.option.id %}
+                {% if user_vote.option.id == item.option.id %}
+                    <tr class="my-vote">
+                {% else %}
+                    <tr>
+                {% endif %}
+            {% else %}
+                <tr>
+            {% endif %}
+                <td>{{ item.option.text }}</td>
+                <td>{{ item.option.vote_count }}</td>
+                <td>{{ item.percentage }}%</td>
+                <td style="width:160px;padding-right:16px;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:{{ item.percentage }}%;"></div>
+                    </div>
+                </td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p>No options available for this poll.</p>
+</div>
+{% endif %}
+
+<div class="btn-group">
+    <a href="{% url 'poll_detail' poll.id %}" class="btn btn-secondary">Back to Poll</a>
+</div>
+{% endblock %}

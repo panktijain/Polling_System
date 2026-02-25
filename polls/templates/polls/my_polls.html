@@ -1,0 +1,46 @@
+{% extends "polls/base.html" %}
+{% block title %}My Polls{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>My Polls</h1>
+  <a href="{% url 'create_poll' %}" class="btn">+ Create Poll</a>
+</div>
+
+{% if polls %}
+  {% for poll in polls %}
+  <div class="card">
+    <div class="poll-row">
+      <div>
+        <h2 style="margin-bottom:4px;">
+          <a href="{% url 'poll_detail' poll.id %}">{{ poll.question }}</a>
+        </h2>
+        <p class="card-meta">
+          <span class="badge {% if poll.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+            {% if poll.is_active %}Active{% else %}Inactive{% endif %}
+          </span>
+          &nbsp;
+          <span class="stat"><strong>{{ poll.total_votes }}</strong> vote{{ poll.total_votes|pluralize }}</span>
+          &nbsp;&middot;&nbsp;
+          <span class="stat">Created {{ poll.created_at|date:"M j, Y" }}</span>
+        </p>
+      </div>
+      <div class="poll-row-actions">
+        <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary btn-sm">Results</a>
+        <form method="post" action="{% url 'deactivate_poll' poll.id %}" style="display:inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary btn-sm">
+            {% if poll.is_active %}Deactivate{% else %}Reactivate{% endif %}
+          </button>
+        </form>
+        <a href="{% url 'delete_poll' poll.id %}" class="btn btn-danger btn-sm">Delete</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="card empty-state">
+    <p>You haven't created any polls yet.</p>
+    <a href="{% url 'create_poll' %}" class="btn">Create your first poll</a>
+  </div>
+{% endif %}
+{% endblock %}
