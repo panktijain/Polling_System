@@ -8,11 +8,19 @@
     {% endif %}
 </div>
 
+<div class="category-filter">
+    <span>Filter by category:</span>
+    {% for code, label in categories %}
+        <a href="?category={{ code }}" class="category-badge {% if selected_category == code %}active{% endif %}">{{ label }}</a>
+    {% endfor %}
+</div>
+
 {% if polls %}
 {% for poll in polls %}
 <div class="card">
     <div class="card-header">
         <h2><a href="{% url 'poll_detail' poll.id %}">{{ poll.question }}</a></h2>
+        <span class="category-badge category-{{ poll.category }}">{{ poll.get_category_display }}</span>
     </div>
     <p class="card-meta">
         <span class="stat"><strong>{{ poll.total_votes }}</strong> vote{{ poll.total_votes|pluralize }}</span>

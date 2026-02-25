@@ -11,8 +11,26 @@ from .models import Option, Poll, Vote
 
 
 def poll_list(request):
-    polls = Poll.objects.filter(is_active=True).prefetch_related('options').select_related('created_by')
-    return render(request, 'polls/poll_list.html', {'polls': polls})
+    # List polls, optionally filter by category
+    category = request.GET.get('category')
+    polls_qs = Poll.objects.filter(is_active=True)
+    if category and category != 'all':
+        polls_qs = polls_qs.filter(category=category)
+    polls = polls_qs.prefetch_related('options').select_related('created_by')
+    # Predefined categories for filter UI
+    categories = [
+        ('all', 'All'),
+        ('technology', 'Technology'),
+        ('education', 'Education'),
+        ('entertainment', 'Entertainment'),
+        ('college_life', 'College Life'),
+        ('sports', 'Sports'),
+    ]
+    return render(request, 'polls/poll_list.html', {
+        'polls': polls,
+        'categories': categories,
+        'selected_category': category or 'all',
+    })
 
 
 def poll_detail(request, id):

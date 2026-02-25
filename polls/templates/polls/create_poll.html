@@ -14,14 +14,29 @@
 <div class="card">
   <form method="post">
     {% csrf_token %}
+
     <div class="form-group">
       <label class="form-label">Question</label>
       {% if form.question.errors %}
         <p class="form-error">{{ form.question.errors|join:", " }}</p>
       {% endif %}
-      <input class="form-input" type="text" name="question"
-             value="{{ form.question.value|default:'' }}"
-             placeholder="Enter your poll question..." autofocus required>
+      {{ form.question }}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      {% if form.description.errors %}
+        <p class="form-error">{{ form.description.errors|join:", " }}</p>
+      {% endif %}
+      {{ form.description }}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      {% if form.category.errors %}
+        <p class="form-error">{{ form.category.errors|join:", " }}</p>
+      {% endif %}
+      {{ form.category }}
     </div>
 
     <div class="form-group">

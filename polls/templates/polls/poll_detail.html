@@ -3,8 +3,13 @@
 {% block content %}
 <a href="{% url 'poll_list' %}" class="back-link">← Back to polls</a>
 
+
 <div class="page-header">
     <h1>{{ poll.question }}</h1>
+    <span class="category-badge category-{{ poll.category }}">{{ poll.get_category_display }}</span>
+    {% if poll.description %}
+        <p class="poll-description">{{ poll.description }}</p>
+    {% endif %}
 </div>
 
 {% if already_voted %}
