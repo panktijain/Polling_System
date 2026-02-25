@@ -2,15 +2,19 @@
 {% block title %}Active Polls{% endblock %}
 {% block content %}
 <div class="polls-header">
-    <div class="polls-header-content">
-        <h1 class="polls-title">🗳️ Active Polls</h1>
-        <p class="polls-subtitle">Explore and participate in community polls</p>
+    <div class="polls-header-left">
+        <div class="polls-header-content">
+            <h1 class="polls-title">🗳️ Active Polls</h1>
+            <p class="polls-subtitle">Explore and participate in community polls</p>
+        </div>
     </div>
-    {% if user.is_authenticated %}
-    <a href="{% url 'create_poll' %}" class="btn btn-create">+ Create Poll</a>
-    {% else %}
-    <a href="{% url 'register' %}" class="btn btn-create">Register to Create</a>
-    {% endif %}
+    <div class="polls-header-right">
+        {% if user.is_authenticated %}
+        <a href="{% url 'create_poll' %}" class="btn btn-create-large">✨ Create New Poll</a>
+        {% else %}
+        <a href="{% url 'register' %}" class="btn btn-create-large">📝 Register to Create</a>
+        {% endif %}
+    </div>
 </div>
 
 <div class="category-section">

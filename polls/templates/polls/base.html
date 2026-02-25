@@ -12,25 +12,53 @@
 <body>
     <nav class="navbar">
         <div class="navbar-inner">
-            <a href="{% url 'poll_list' %}" class="navbar-brand">Poll System</a>
+            <a href="{% url 'poll_list' %}" class="navbar-brand">🗳️ Poll System</a>
             <ul class="navbar-nav">
-                <li><a href="{% url 'poll_list' %}">Browse</a></li>
+                <li><a href="{% url 'poll_list' %}">📋 Browse</a></li>
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'create_poll' %}">Create Poll</a></li>
-                <li><a href="{% url 'my_polls' %}">My Polls</a></li>
-                <li><a href="{% url 'vote_history' %}">My Votes</a></li>
-                <li class="navbar-user">{{ user.username }}</li>
-                <li>
-                    <form method="post" action="{% url 'logout' %}" style="display:inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn-link">Logout</button>
-                    </form>
-                </li>
+                <li><a href="{% url 'create_poll' %}">✨ Create</a></li>
+                <li><a href="{% url 'my_polls' %}">📊 My Polls</a></li>
+                <li><a href="{% url 'vote_history' %}">🗳️ History</a></li>
                 {% else %}
                 <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}" class="btn-nav">Register</a></li>
                 {% endif %}
             </ul>
+            {% if user.is_authenticated %}
+            <div class="navbar-profile">
+                <div class="profile-menu-trigger">
+                    <div class="profile-avatar">{{ user.username|first|upper }}</div>
+                    <span class="profile-name">{{ user.username }}</span>
+                    <svg class="profile-dropdown-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="profile-dropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-avatar">{{ user.username|first|upper }}</div>
+                        <div class="dropdown-user-info">
+                            <div class="dropdown-username">{{ user.username }}</div>
+                            <div class="dropdown-email">{{ user.email }}</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'user_profile' %}" class="dropdown-item">👤 View Profile</a>
+                    <a href="{% url 'edit_profile' %}" class="dropdown-item">✏️ Edit Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'my_polls' %}" class="dropdown-item">📊 My Polls</a>
+                    <a href="{% url 'vote_history' %}" class="dropdown-item">🗳️ Vote History</a>
+                    <a href="{% url 'create_poll' %}" class="dropdown-item">✨ Create New Poll</a>
+                    <div class="dropdown-divider"></div>
+                    <form method="post" action="{% url 'logout' %}" style="display:block">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item dropdown-logout">🚪 Logout</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="navbar-auth">
+                <a href="{% url 'register' %}" class="btn btn-nav">Register</a>
+            </div>
+            {% endif %}
         </div>
     </nav>
 

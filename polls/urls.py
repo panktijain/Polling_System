@@ -23,4 +23,8 @@ urlpatterns = [
 
     # Vote history
     path('history/', views.vote_history, name='vote_history'),
+
+    # User profile
+    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]

@@ -6,7 +6,7 @@ from django.db.models import F
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import PollCreationForm, RegistrationForm
+from .forms import PollCreationForm, RegistrationForm, UserProfileForm
 from .models import Option, Poll, Vote
 
 
@@ -195,3 +195,33 @@ def vote_history(request):
         .order_by('-voted_at')
     )
     return render(request, 'polls/vote_history.html', {'user_votes': user_votes})
+
+
+@login_required
+def user_profile(request):
+    """Display user profile information"""
+    total_polls = Poll.objects.filter(created_by=request.user).count()
+    user_votes = Vote.objects.filter(user=request.user).count()
+    context = {
+        'total_polls': total_polls,
+        'user_votes': user_votes,
+    }
+    return render(request, 'polls/profile.html', context)
+
+
+@login_required
+def edit_profile(request):
+    """Allow user to edit their profile information"""
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('user_profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'polls/edit_profile.html', context)

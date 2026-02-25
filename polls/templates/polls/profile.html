@@ -1,0 +1,106 @@
+{% extends "polls/base.html" %}
+{% block title %}User Profile{% endblock %}
+{% block content %}
+
+<div class="profile-header">
+    <div class="profile-avatar-large">{{ user.username|first|upper }}</div>
+    <div class="profile-header-content">
+        <h1 class="profile-username">{{ user.username }}</h1>
+        <p class="profile-email">{{ user.email }}</p>
+        {% if user.first_name or user.last_name %}
+            <p class="profile-fullname">{{ user.first_name }} {{ user.last_name }}</p>
+        {% endif %}
+    </div>
+    <a href="{% url 'edit_profile' %}" class="btn btn-primary">✏️ Edit Profile</a>
+</div>
+
+<div class="profile-stats-section">
+    <div class="profile-stat-card">
+        <div class="stat-icon-bg" style="background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);">
+            <div class="stat-icon">📊</div>
+        </div>
+        <div class="stat-info">
+            <p class="stat-label">Polls Created</p>
+            <p class="stat-number">{{ total_polls }}</p>
+        </div>
+    </div>
+    <div class="profile-stat-card">
+        <div class="stat-icon-bg" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);">
+            <div class="stat-icon">🗳️</div>
+        </div>
+        <div class="stat-info">
+            <p class="stat-label">Votes Cast</p>
+            <p class="stat-number">{{ user_votes }}</p>
+        </div>
+    </div>
+    <div class="profile-stat-card">
+        <div class="stat-icon-bg" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+            <div class="stat-icon">📅</div>
+        </div>
+        <div class="stat-info">
+            <p class="stat-label">Member Since</p>
+            <p class="stat-number">{{ user.date_joined|date:"M Y" }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="profile-actions">
+    <a href="{% url 'my_polls' %}" class="action-card">
+        <div class="action-icon">📊</div>
+        <div class="action-content">
+            <h3>My Polls</h3>
+            <p>View and manage your created polls</p>
+        </div>
+        <div class="action-arrow">→</div>
+    </a>
+    
+    <a href="{% url 'vote_history' %}" class="action-card">
+        <div class="action-icon">🗳️</div>
+        <div class="action-content">
+            <h3>Vote History</h3>
+            <p>See all your voting activity</p>
+        </div>
+        <div class="action-arrow">→</div>
+    </a>
+    
+    <a href="{% url 'create_poll' %}" class="action-card">
+        <div class="action-icon">✨</div>
+        <div class="action-content">
+            <h3>Create New Poll</h3>
+            <p>Start a new community poll</p>
+        </div>
+        <div class="action-arrow">→</div>
+    </a>
+</div>
+
+<div class="profile-info-section">
+    <h2>Account Information</h2>
+    <div class="info-grid">
+        <div class="info-item">
+            <label>Username</label>
+            <p>{{ user.username }}</p>
+        </div>
+        <div class="info-item">
+            <label>Email Address</label>
+            <p>{{ user.email }}</p>
+        </div>
+        <div class="info-item">
+            <label>First Name</label>
+            <p>{{ user.first_name|default:"Not set" }}</p>
+        </div>
+        <div class="info-item">
+            <label>Last Name</label>
+            <p>{{ user.last_name|default:"Not set" }}</p>
+        </div>
+        <div class="info-item">
+            <label>Date Joined</label>
+            <p>{{ user.date_joined|date:"F j, Y" }}</p>
+        </div>
+        <div class="info-item">
+            <label>Last Login</label>
+            <p>{% if user.last_login %}{{ user.last_login|date:"F j, Y \a\t H:i" }}{% else %}Never{% endif %}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
