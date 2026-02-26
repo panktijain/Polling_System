@@ -71,7 +71,7 @@ class PollCreationForm(forms.ModelForm):
                 'class': 'form-input',
             }),
             'description': forms.Textarea(attrs={
-                'placeholder': 'Enter a description (optional)...',
+                'placeholder': 'Enter a description ...',
                 'class': 'form-textarea',
                 'rows': 3,
             }),

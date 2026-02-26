@@ -7,7 +7,7 @@
     {% if form.errors %}
       <div class="alert alert-error">Invalid username or password. Please try again.</div>
     {% endif %}
-    <form method="post">
+    <form method="POST">
       {% csrf_token %}
       <div class="form-group">
         <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>

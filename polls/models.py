@@ -15,7 +15,7 @@ class Poll(models.Model):
     ]
 
     question = models.CharField(max_length=255, blank=False)
-    description = models.TextField(blank=True, help_text="Optional description of the poll.")
+    description = models.TextField(blank=False)
     category = models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,
@@ -50,12 +50,13 @@ class Poll(models.Model):
 class Option(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name='options')
     text = models.CharField(max_length=255, blank=False)
+    
     vote_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.text
-
-    def percentage(self, total_votes):
+    #calculate percentage of votes for this option
+    def percentage(self, total_votes): 
         if total_votes == 0:
             return 0
         return round((self.vote_count / total_votes) * 100, 1)
